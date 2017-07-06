@@ -16,12 +16,13 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-import logging.handlers
 import re
 import sys
 import types
+import logging.handlers
 
 IDENTIFIER = re.compile('^[a-z_][a-z0-9_]*$', re.I)
+
 
 def valid_ident(s):
     m = IDENTIFIER.match(s)
@@ -46,6 +47,7 @@ except ImportError:
             raise TypeError('Level not an integer or a '
                             'valid string: %r' % level)
         return rv
+
 
 # The ConvertingXXX classes are wrappers around standard Python containers,
 # and they serve to convert any suitable values in the container. The
@@ -93,6 +95,7 @@ class ConvertingDict(dict):
                 result.key = key
         return result
 
+
 class ConvertingList(list):
     """A converting list wrapper."""
     def __getitem__(self, key):
@@ -116,6 +119,7 @@ class ConvertingList(list):
                 result.parent = self
         return result
 
+
 class ConvertingTuple(tuple):
     """A converting tuple wrapper."""
     def __getitem__(self, key):
@@ -127,6 +131,7 @@ class ConvertingTuple(tuple):
                 result.parent = self
                 result.key = key
         return result
+
 
 class BaseConfigurator(object):
     """
@@ -254,6 +259,7 @@ class BaseConfigurator(object):
         if isinstance(value, list):
             value = tuple(value)
         return value
+
 
 class DictConfigurator(BaseConfigurator):
     """
@@ -539,6 +545,7 @@ class DictConfigurator(BaseConfigurator):
         self.common_logger_config(root, config, incremental)
 
 dictConfigClass = DictConfigurator
+
 
 def dictConfig(config):
     """Configure logging using a dictionary."""

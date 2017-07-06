@@ -1,14 +1,15 @@
-"""An extended version of the log_settings module from zamboni:
+"""
+An extended version of the log_settings module from zamboni:
 https://github.com/jbalogh/zamboni/blob/master/log_settings.py
 """
-from __future__ import absolute_import
-
-from tornado.log import LogFormatter as TornadoLogFormatter
-import logging, logging.handlers
 import os.path
 import types
-
+import logging
+import logging.handlers
 from logconfig import dictconfig
+
+from tornado.log import LogFormatter as TornadoLogFormatter
+
 
 # Pulled from commonware.log we don't have to import that, which drags with
 # it Django dependencies.
@@ -20,6 +21,7 @@ class RemoteAddressFormatter(logging.Formatter):
                 and 'REMOTE_ADDR' not in record.__dict__):
             record.__dict__['REMOTE_ADDR'] = None
         return logging.Formatter.format(self, record)
+
 
 class UTF8SafeFormatter(RemoteAddressFormatter):
     def __init__(self, fmt=None, datefmt=None, encoding='utf-8'):
@@ -38,9 +40,11 @@ class UTF8SafeFormatter(RemoteAddressFormatter):
             t = t.encode(self.encoding, 'replace')
         return t
 
+
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
+
 
 def initialize_logging(syslog_tag, syslog_facility, loggers,
         log_level=logging.INFO, use_syslog=False):

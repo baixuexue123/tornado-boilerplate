@@ -1,10 +1,12 @@
+import os
 import logging
+import logging.handlers
+
 import tornado
 import tornado.template
-import os
+import tornado.options
 from tornado.options import define, options
 
-import environment
 import logconfig
 
 # Make filepaths relative to settings.
@@ -14,13 +16,14 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 define("port", default=8888, help="run on the given port", type=int)
 define("config", default=None, help="tornado config file")
 define("debug", default=False, help="debug mode")
+
 tornado.options.parse_command_line()
 
 MEDIA_ROOT = path(ROOT, 'media')
 TEMPLATE_ROOT = path(ROOT, 'templates')
 
-# Deployment Configuration
 
+# Deployment Configuration
 class DeploymentType:
     PRODUCTION = "PRODUCTION"
     DEV = "DEV"
@@ -66,7 +69,7 @@ else:
 USE_SYSLOG = DEPLOYMENT != DeploymentType.SOLO
 
 logconfig.initialize_logging(SYSLOG_TAG, SYSLOG_FACILITY, LOGGERS,
-        LOG_LEVEL, USE_SYSLOG)
+                             LOG_LEVEL, USE_SYSLOG)
 
 if options.config:
     tornado.options.parse_config_file(options.config)

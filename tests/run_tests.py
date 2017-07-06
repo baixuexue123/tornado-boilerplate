@@ -9,6 +9,7 @@ TEST_MODULES = [
     'test.test_something',
 ]
 
+
 def all():
     try:
         return unittest.defaultTestLoader.loadTestsFromNames(TEST_MODULES)
