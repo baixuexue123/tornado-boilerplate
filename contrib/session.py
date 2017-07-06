@@ -6,7 +6,7 @@ class Session:
 
     cache_key_prefix = 'session-'
     session_id_name = '_sessionid'
-    expire_seconds = 60 * 60 * 2
+    expire_seconds = 60 * 60 * 1
 
     def __init__(self, handler):
         """

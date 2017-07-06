@@ -13,7 +13,7 @@ class FlashMessagesMixin(object):
 
     def flash(self, message, type='error'):
         self.messages.append((type, message))
-        self.set_secure_cookie('flash_messages',tornado.escape.json_encode(self.messages))
+        self.set_secure_cookie('flash_messages', tornado.escape.json_encode(self.messages))
 
     def get_flashed_messages(self):
         messages = self.messages

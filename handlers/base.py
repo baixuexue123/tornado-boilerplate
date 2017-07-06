@@ -7,28 +7,7 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 logger = logging.getLogger('boilerplate.' + __name__)
 
 
-class TemplateRenderingMixin:
-    """
-    A simple class to hold methods for rendering templates.
-    """
-    def render_template(self, template_name, **kwargs):
-        template_dirs = []
-        if self.settings.get('template_path', ''):
-            template_dirs.append(
-                self.settings["template_path"]
-            )
-
-        env = Environment(loader=FileSystemLoader(template_dirs))
-
-        try:
-            template = env.get_template(template_name)
-        except TemplateNotFound:
-            raise TemplateNotFound(template_name)
-        content = template.render(kwargs)
-        return content
-
-
-class BaseHandler(tornado.web.RequestHandler, TemplateRenderingMixin):
+class BaseHandler(tornado.web.RequestHandler):
     """A class to collect common handler methods - all other handlers should
     subclass this one.
     """
@@ -66,6 +45,22 @@ class BaseHandler(tornado.web.RequestHandler, TemplateRenderingMixin):
         arg = self.request.arguments[name]
         logger.debug("Found '%s': %s in JSON arguments" % (name, arg))
         return arg
+
+    def render_template(self, template_name, **kwargs):
+        template_dirs = []
+        if self.settings.get('template_path', ''):
+            template_dirs.append(
+                self.settings["template_path"]
+            )
+
+        env = Environment(loader=FileSystemLoader(template_dirs))
+
+        try:
+            template = env.get_template(template_name)
+        except TemplateNotFound:
+            raise TemplateNotFound(template_name)
+        content = template.render(kwargs)
+        return content
 
     def render2(self, template_name, **kwargs):
         """
