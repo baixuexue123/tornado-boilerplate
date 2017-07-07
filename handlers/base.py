@@ -1,16 +1,44 @@
 import json
 import logging
+import concurrent.futures
 
 import tornado.web
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
+from contrib import torndb
+from contrib.session import Session
+
 logger = logging.getLogger('boilerplate.' + __name__)
+
+executor = concurrent.futures.ThreadPoolExecutor(2)
 
 
 class BaseHandler(tornado.web.RequestHandler):
     """A class to collect common handler methods - all other handlers should
     subclass this one.
     """
+
+    def initialize(self):
+        database = self.settings['database']
+        self.db = torndb.Connection(
+            host=database['host'], database=database['db'],
+            user=database['use'], password=database['password']
+        )
+
+    @property
+    def session(self):
+        """ Returns a Session instance """
+        if not hasattr(self, '__session_manager'):
+            setattr(self, '__session_manager', Session(self))
+        return getattr(self, '__session_manager')
+
+    def on_finish(self):
+        self.db.close()
+        if hasattr(self, '__session_manager'):
+            self.session.save()
+
+
+class ApiHandler(BaseHandler):
 
     def load_json(self):
         """Load JSON from the request body and store them in
@@ -46,6 +74,9 @@ class BaseHandler(tornado.web.RequestHandler):
         logger.debug("Found '%s': %s in JSON arguments" % (name, arg))
         return arg
 
+
+class Jinja2Handler(BaseHandler):
+
     def render_template(self, template_name, **kwargs):
         template_dirs = []
         if self.settings.get('template_path', ''):
@@ -62,7 +93,7 @@ class BaseHandler(tornado.web.RequestHandler):
         content = template.render(kwargs)
         return content
 
-    def render2(self, template_name, **kwargs):
+    def render(self, template_name, **kwargs):
         """
         This is for making some extra context variables available to
         the template

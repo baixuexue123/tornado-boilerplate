@@ -1,7 +1,7 @@
 import tornado.escape
 
 
-class FlashMessagesMixin(object):
+class FlashMessagesMixin:
     @property
     def messages(self):
         if not hasattr(self, '_messages'):

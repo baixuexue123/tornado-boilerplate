@@ -1,11 +1,23 @@
 #! /usr/bin/env python
+import os.path
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
-from tornado.options import options
+import tornado.options
+from tornado.options import define, options
 
 from .settings import settings
 from .urls import url_patterns
+
+
+define("port", default=8888, help="Run on the given port", type=int)
+define("debug", default=False, help="Debug mode", type=bool)
+
+tornado.options.parse_command_line()
+
+options['log_file_prefix'] = os.path.join(settings.BASE_DIR, 'logs/boilerplate@8001.log')
+options['logging'] = 'debug' if options.debug else 'info'
 
 
 class TornadoBoilerplate(tornado.web.Application):
