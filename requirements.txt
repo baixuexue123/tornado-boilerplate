@@ -1,3 +1,4 @@
 tornado
 pymysql
 redis
+bcrypt
