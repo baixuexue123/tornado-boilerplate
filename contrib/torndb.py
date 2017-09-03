@@ -1,10 +1,7 @@
-import logging
 import time
+import logging
 
 import pymysql
-
-version = "0.3"
-version_info = (0, 3, 0, 0)
 
 
 class Connection:
@@ -210,3 +207,6 @@ class Row(dict):
             return self[name]
         except KeyError:
             raise AttributeError(name)
+
+    def __setattr__(self, name, value):
+        self[name] = value
