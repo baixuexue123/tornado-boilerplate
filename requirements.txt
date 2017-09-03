@@ -2,3 +2,4 @@ tornado
 pymysql
 redis
 bcrypt
+jinja2
