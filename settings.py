@@ -7,7 +7,7 @@ import tornado.template
 import tornado.options
 from tornado.options import define, options
 
-SECRET_KEY = 'django.boilerplate'
+SECRET_KEY = 'tornado.app'
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
