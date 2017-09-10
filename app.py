@@ -30,7 +30,7 @@ class Application(tornado.web.Application):
 def main():
     app = Application()
     server = tornado.httpserver.HTTPServer(app)
-    server.bind(options.port)
+    server.listen(options.port, address='127.0.0.1')
     tornado.ioloop.IOLoop.current().start()
 
 
