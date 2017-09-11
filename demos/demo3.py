@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import tornado.ioloop
-from tornado.gen import coroutine
+from tornado import gen
 from tornado.concurrent import Future
 
 
-@coroutine
+@gen.coroutine
 def asyn_sum(a, b):
     print("begin calculate:sum %d+%d" % (a, b))
     future = Future()
@@ -21,7 +21,10 @@ def asyn_sum(a, b):
 
 
 def main():
-    asyn_sum(2, 3)
+    print('-----------------------------')
+    ret = asyn_sum(2, 3)
+    print(type(ret))
+    print('-----------------------------')
     tornado.ioloop.IOLoop.instance().start()
 
 
