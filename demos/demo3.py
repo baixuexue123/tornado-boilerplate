@@ -23,7 +23,6 @@ def asyn_sum(a, b):
 def main():
     print('-----------------------------')
     ret = asyn_sum(2, 3)
-    print(type(ret))
     print('-----------------------------')
     tornado.ioloop.IOLoop.instance().start()
 
