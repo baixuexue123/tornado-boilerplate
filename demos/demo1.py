@@ -74,6 +74,7 @@ class GenAsyncHandler3(tornado.web.RequestHandler):
     @gen.coroutine
     def add(self, a, b):
         val = a + b
+        yield gen.sleep(2.0)
         return val
 
     @gen.coroutine

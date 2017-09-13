@@ -22,6 +22,7 @@ def asyn_sum(a, b):
 
     _div = yield asyn_div(_sum, b)
 
+    print(_div)
     print("4444444444444444444")
 
 

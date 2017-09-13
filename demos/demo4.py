@@ -1,27 +1,31 @@
-import random
-import time
+from urllib.request import urlopen
+
 from tornado import gen
+from tornado.gen import Future
 from tornado.ioloop import IOLoop
 
 
 @gen.coroutine
-def gen_url(url):
-    wait_time = random.randint(4, 5)
-    yield gen.sleep(wait_time)
-    print('URL {} took {}s to get!'.format(url, wait_time))
-    return url, wait_time
+def handle_response(resp):
+    print(resp)
+    return resp
 
 
 @gen.coroutine
-def fetch_url():
-    before = time.time()
-    urls = [gen_url(url) for url in ['URL1', 'URL2', 'URL3']]
-    result = yield urls
-    after = time.time()
-    print(result)
-    print('total time: {} seconds'.format(after - before))
+def fetch(url):
+    print('fetch: 1111111111111111')
+    resp = urlopen(url)
+    print('fetch: 2222222222222222')
+    resp = yield handle_response(resp)
+    return resp
 
 
 if __name__ == '__main__':
-    print('output:')
-    IOLoop.current().run_sync(fetch_url)
+    print('start')
+
+    future = fetch('http://python.jobbole.com/')
+
+    print('end')
+    io_loop = IOLoop.current()
+    io_loop.add_future(future, lambda f: io_loop.stop())
+    io_loop.start()
