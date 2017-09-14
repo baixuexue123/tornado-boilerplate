@@ -10,8 +10,7 @@ from tornado.options import define, options, parse_command_line
 
 
 def handle_request(request):
-    print(type(request))
-    message = "ECHO %s\n" % request.uri
+    message = "<p>Got it: %s</p>" % request.full_url()
     length = len(message)
     request.write(tornado.escape.utf8(f"HTTP/1.1 200 OK\r\nContent-Length: {length}\r\n\r\n{message}"))
     request.finish()

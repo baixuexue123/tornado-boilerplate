@@ -1,7 +1,6 @@
 from urllib.request import urlopen
 
 from tornado import gen
-from tornado.gen import Future
 from tornado.ioloop import IOLoop
 
 

@@ -4,9 +4,7 @@ import tornado.escape
 import tornado.ioloop
 import tornado.httpserver
 from tornado import gen
-from tornado.concurrent import Future
 from tornado.options import define, options, parse_command_line
-from tornado.log import app_log
 
 
 class IndexHandler1(tornado.web.RequestHandler):
@@ -19,6 +17,7 @@ class IndexHandler2(tornado.web.RequestHandler):
     def get(self):
         self.write("<p>Hello</p>")
         self.write("<p>World</p>")
+        yield gen.sleep(1.0)
 
 
 class IndexHandler3(tornado.web.RequestHandler):
