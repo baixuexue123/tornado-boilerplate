@@ -29,5 +29,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# http://blog.csdn.net/wyx819/article/details/45420017
