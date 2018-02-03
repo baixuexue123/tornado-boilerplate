@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from tornado import gen
 from tornado.ioloop import IOLoop
 from tornado.tcpserver import TCPServer

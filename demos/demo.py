@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import tornado.web
 import tornado.escape
 import tornado.ioloop

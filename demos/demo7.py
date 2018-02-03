@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import pprint
 
 import tornado.web

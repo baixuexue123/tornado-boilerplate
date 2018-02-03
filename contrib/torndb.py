@@ -1,6 +1,5 @@
 import time
 import logging
-
 import pymysql
 
 
@@ -37,7 +36,8 @@ class Connection:
 
         args = dict(charset=charset, db=database,
                     init_command=('SET time_zone = "%s"' % time_zone),
-                    connect_timeout=connect_timeout, sql_mode=sql_mode, **kwargs)
+                    connect_timeout=connect_timeout,
+                    sql_mode=sql_mode, **kwargs)
         if user is not None:
             args["user"] = user
         if password is not None:
@@ -79,6 +79,18 @@ class Connection:
         self._db = pymysql.connect(**self._db_args)
         self._db.autocommit(True)
 
+    def autocommit(self, value):
+        self._db.autocommit(value)
+
+    def begin(self):
+        self._db.begin()
+
+    def rollback(self):
+        self._db.rollback()
+
+    def commit(self):
+        self._db.commit()
+
     def iter(self, query, *parameters, **kwparameters):
         """Returns an iterator for the given query and parameters."""
         self._ensure_connected()
@@ -93,13 +105,10 @@ class Connection:
 
     def query(self, query, *parameters, **kwparameters):
         """Returns a row list for the given query and parameters."""
-        cursor = self._cursor()
-        try:
+        with self._cursor() as cursor:
             self._execute(cursor, query, parameters, kwparameters)
             column_names = [d[0] for d in cursor.description]
             return [Row(zip(column_names, row)) for row in cursor]
-        finally:
-            cursor.close()
 
     def get(self, query, *parameters, **kwparameters):
         """Returns the (singular) row returned by the given query.
@@ -123,58 +132,30 @@ class Connection:
 
     def execute_lastrowid(self, query, *parameters, **kwparameters):
         """Executes the given query, returning the lastrowid from the query."""
-        cursor = self._cursor()
-        try:
+        with self._cursor() as cursor:
             self._execute(cursor, query, parameters, kwparameters)
             return cursor.lastrowid
-        finally:
-            cursor.close()
 
     def execute_rowcount(self, query, *parameters, **kwparameters):
         """Executes the given query, returning the rowcount from the query."""
-        cursor = self._cursor()
-        try:
+        with self._cursor() as cursor:
             self._execute(cursor, query, parameters, kwparameters)
             return cursor.rowcount
-        finally:
-            cursor.close()
-
-    def executemany(self, query, parameters):
-        """Executes the given query against all the given param sequences.
-
-        We return the lastrowid from the query.
-        """
-        return self.executemany_lastrowid(query, parameters)
-
-    def executemany_lastrowid(self, query, parameters):
-        """Executes the given query against all the given param sequences.
-
-        We return the lastrowid from the query.
-        """
-        cursor = self._cursor()
-        try:
-            cursor.executemany(query, parameters)
-            return cursor.lastrowid
-        finally:
-            cursor.close()
 
     def executemany_rowcount(self, query, parameters):
         """Executes the given query against all the given param sequences.
 
         We return the rowcount from the query.
         """
-        cursor = self._cursor()
-        try:
+        with self._cursor() as cursor:
             cursor.executemany(query, parameters)
             return cursor.rowcount
-        finally:
-            cursor.close()
 
     update = delete = execute_rowcount
     updatemany = executemany_rowcount
 
     insert = execute_lastrowid
-    insertmany = executemany_lastrowid
+    insertmany = executemany_rowcount
 
     def _ensure_connected(self):
         # Mysql by default closes client connections that are idle for

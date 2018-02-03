@@ -6,8 +6,8 @@ from tornado.httpclient import AsyncHTTPClient
 @gen.coroutine
 def fetch(urls):
     http = AsyncHTTPClient()
-    resps = yield list(map(http.fetch, urls))
-    return resps
+    resp = yield list(map(http.fetch, urls))
+    return resp
 
 
 if __name__ == '__main__':

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import tornado.ioloop
 from tornado import gen
 
