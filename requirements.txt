@@ -3,3 +3,4 @@ pymysql
 redis
 bcrypt
 jinja2
+lazy_object_proxy
