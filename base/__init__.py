@@ -13,9 +13,7 @@ from tornado.log import app_log, gen_log
 
 from contrib import torndb
 from contrib.session import Session, InvalidSesssionID
-from utils import cached_property
 from utils.text import force_bytes
-from utils.mail import send_mail
 
 
 def permission_required(permisions=None, raise_exception=True):
@@ -132,13 +130,7 @@ class BaseHandler(tornado.web.RequestHandler):
             return
 
         _role_proxy = functools.partial(self.get_role, role_id=user['role_id'])
-        _regions_proxy = functools.partial(self.get_user_regions, user_id=user_id)
-        _businesses_proxy = functools.partial(self.get_user_businesses, user_id=user_id)
-        _groups_proxy = functools.partial(self.get_user_groups, user_id=user_id)
         user['role'] = lazy_object_proxy.Proxy(_role_proxy)
-        user['regions'] = lazy_object_proxy.Proxy(_regions_proxy)
-        user['businesses'] = lazy_object_proxy.Proxy(_businesses_proxy)
-        user['groups'] = lazy_object_proxy.Proxy(_groups_proxy)
         return user
 
     @run_on_executor
@@ -151,9 +143,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def delay(self, method, *args, **kwargs):
         return self.executor.submit(functools.partial(method, *args, **kwargs))
-
-    def send_mail(self, receivers, body, subject='CRM系统邮件'):
-        self.delay(send_mail, receivers, subject, body)
 
     def on_finish(self):
         self.db.close()
@@ -173,11 +162,7 @@ class ExportBase(BaseHandler):
             return
 
         _role_proxy = functools.partial(self.get_role, role_id=user['role_id'])
-        _regions_proxy = functools.partial(self.get_user_regions, user_id=user_id)
-        _groups_proxy = functools.partial(self.get_user_groups, user_id=user_id)
         user['role'] = lazy_object_proxy.Proxy(_role_proxy)
-        user['regions'] = lazy_object_proxy.Proxy(_regions_proxy)
-        user['groups'] = lazy_object_proxy.Proxy(_groups_proxy)
         return user
 
     def prepare(self):

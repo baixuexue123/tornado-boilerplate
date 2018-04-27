@@ -28,24 +28,6 @@ class ApiHandler(BaseHandler):
         elif self.request.method in ('POST', 'PUT', 'DELETE'):
             return self.get_json_argument(self.settings['session']['session_id_name'], None)
 
-    def get_current_user(self):
-        try:
-            user_id = self.session['userId']
-        except KeyError:
-            return None
-
-        user = self.get_user(id=user_id)
-        if user and user.is_active:
-            _role_proxy = functools.partial(self.get_role, role_id=user['role_id'])
-            _regions_proxy = functools.partial(self.get_user_regions, user_id=user_id)
-            _businesses_proxy = functools.partial(self.get_user_businesses, user_id=user_id)
-            _groups_proxy = functools.partial(self.get_user_groups, user_id=user_id)
-            user['role'] = lazy_object_proxy.Proxy(_role_proxy)
-            user['regions'] = lazy_object_proxy.Proxy(_regions_proxy)
-            user['businesses'] = lazy_object_proxy.Proxy(_businesses_proxy)
-            user['groups'] = lazy_object_proxy.Proxy(_groups_proxy)
-        return user
-
     def clear(self):
         """Resets all headers and content for this response."""
         self._headers = httputil.HTTPHeaders({

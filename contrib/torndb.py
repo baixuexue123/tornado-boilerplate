@@ -18,13 +18,6 @@ class Connection:
 
     We explicitly set the timezone to UTC and assume the character encoding to
     UTF-8 (can be changed) on all connections to avoid time zone and encoding errors.
-
-    The sql_mode parameter is set by default to "traditional", which "gives an error instead of a warning"
-    (http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html). However, it can be set to
-    any other mode including blank (None) thereby explicitly clearing the SQL mode.
-
-    Arguments read_timeout and write_timeout can be passed using kwargs, if
-    PyMySQL version >= 0.7.11 and MySQL version > 5.1.12.
     """
     def __init__(self, host, database, user=None, password=None,
                  max_idle_time=7 * 3600, connect_timeout=3,
