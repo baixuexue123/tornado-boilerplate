@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 import tornado.httpserver
-import tornado.web
 import tornado.options
+import tornado.web
 from tornado.ioloop import IOLoop
 from tornado.options import define, options
 
